@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+    <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet'>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">  
+    <link rel="stylesheet" href="stores.css">
+    <link rel="stylesheet" href="navbar.css">
+
+    <title>Store Suggestions</title> 
+    <!--    jquery used for ajax calls-->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    </script>
+
+    <script>
+
+        // API URL's for Demo
+        let getStoreDetailsURL = "https://apimdev.wakefern.com/mockexample/V1/getStoreDetails"
+        let getItemDetailsURL = "https://apimdev.wakefern.com/mockexample/V1/getItemDetails";
+        let responseJSON = "";
+        var obj;
+
+        // Build Request Function
+        function callAPI() {
+
+            // 1 - Make AJAX Call
+            $.ajax({
+                cache: false,
+                url: getStoreDetailsURL,  // Set URL Here
+                method: "GET",  //Set Method Here
+                dataType: "json",
+                crossDomain: true,
+                CORS: true,
+                async: true,
+                headers: {  // Set Headers Here
+                    'Ocp-Apim-Subscription-Key': '4ae9400a1eda4f14b3e7227f24b74b44',
+                    'accept': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'GET, POST,OPTIONS',
+                    'Access-Control-Allow-Headers': 'X-Requested-With,content-type,Authorization,Ocp-Apim-Subscription-Key'
+                },
+
+                // 2 - Set Success Actions Here
+                success: function (data) {
+
+                    // Store JSON into a variable
+                    responseJSON = JSON.stringify(data);
+                    obj = data;
+                    // Print response here
+                    console.log(responseJSON);
+
+                },
+                // 3 - Set Fail Actions Here
+                // Error handling in web dev generally does not involve a log file.
+                // This section should include feedback to the user of the website saying something went wrong
+                // Production code should not print on the console
+                // Development code can print in the console for debugging reasons
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        // Call API Requests
+        callAPI();
+
+        function parse(zipCode){
+            if (document.contains(document.getElementById("mytable"))) {
+                document.getElementById("mytable").remove();
+            }   
+            
+            var tbl=$("<table/>").attr("id","mytable");
+            $("#stable").append(tbl);
+            for(var i=0;i<obj.length ;i++)
+            {
+                if((obj[i]["Zipcode"]).localeCompare(zipCode) == 0){
+                    var tr="<tr>";
+                    var td1="<td>"+obj[i]["Store"]+"</td>";
+                    var td2="<td>"+obj[i]["Address"]+"</td>";
+                    var td3="<td>"+obj[i]["Zipcode"]+"</td>";
+                    var td4="<td>"+obj[i]["Phone"]+"</td></tr>";
+                   
+                    $("#mytable").append(tr+td1+td2+td3+td4); 
+                }
+            }
+            
+        }
+
+    </script>
+</head>
+<body class="background-image">
+    <ul>
+        <li><a href="landing.php">Home</a></li>
+        <li style="float:right"><a href="logout.php">Log Out</a></li>
+        <li style="float:right"><a href="stores.html">Stores</a></li>
+        <li style="float:right"><a href="plant.php">Plant</a></li>
+        <li style="float:right"><a href="quiz.php">Quiz</a></li>
+      </ul>
+<div>
+    <h1>Store Suggestions</h1>
+    <p>Search for eco-friendly stores near you</p>
+    
+    <form class="" action="" method="post" autocomplete="off">
+        <label for="zip">Zip Code: </label>
+        <input type="text" name="zip" id="zip" required value="">
+        <input class = "button" type="button" onclick="parse(zip.value)" value="Submit">
+        <br>
+    </form>
+
+    <p id="stable"><br></p>
+</div>
+    
+    
+</body>
+</html>
